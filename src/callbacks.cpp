@@ -99,7 +99,7 @@ namespace cs296
       
       //! Press 'z' to zoom out.
     case 'z':
-      view_zoom = b2Min(1.1f * view_zoom, 20.0f);
+      view_zoom = b2Min(1.1f * view_zoom, 40.0f);
       resize_cb(width, height);
       break;
       
@@ -167,7 +167,7 @@ namespace cs296
     //! Press home to reset the view.
     case GLUT_KEY_HOME:
       view_zoom = 1.0f;
-      settings.view_center.Set(0.0f, 20.0f);
+      settings.view_center.Set(0.0f, 40.0f);
       callbacks_t::resize_cb(width, height);
       break;
     }
@@ -277,7 +277,7 @@ namespace cs296
 	entry = cs296::sim;
 	test = entry->create_fcn();
 	view_zoom = 1.0f;
-	settings.view_center.Set(0.0f, 20.0f);
+	settings.view_center.Set(0.0f, 40.0f);
       resize_cb(width, height);
       }
   }
