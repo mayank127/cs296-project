@@ -5,3 +5,4 @@ external/lib
 external/src/Box2D
 doc/html
 test
+*~
