@@ -27,12 +27,12 @@ namespace cs296
   cs296::sim_t* entry;
   cs296::base_sim_t* test;
   cs296::settings_t settings;
-  int32 width = 640;
-  int32 height = 480;
+  int32 width = 1368;
+  int32 height = 768;
   int32 frame_period = 16;
   int32 main_window;
   float settings_hz = 60.0;
-  float32 view_zoom = 1.0f;
+  float32 view_zoom = 3.0f;
   int tx, ty, tw, th;
   bool r_mouse_down;
   b2Vec2 lastp;

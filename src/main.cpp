@@ -70,8 +70,9 @@ using namespace cs296;
 //! This function creates all the GLUI gui elements
 void create_glui_ui(void)
 {
-  GLUI *glui = GLUI_Master.create_glui_subwindow( main_window, GLUI_SUBWINDOW_BOTTOM );
-  
+  GLUI *glui = GLUI_Master.create_glui_subwindow( main_window, GLUI_SUBWINDOW_RIGHT );
+  glui->add_statictext("Group 11 Simulation"); 
+  new GLUI_Separator(glui);
   glui->add_statictext("Simulation Timesteps"); 
   GLUI_Spinner* velocityIterationSpinner =
     glui->add_spinner("Velocity Iterations", GLUI_SPINNER_INT, &settings.velocity_iterations);
@@ -86,8 +87,8 @@ void create_glui_ui(void)
   hertzSpinner->set_float_limits(5.0f, 200.0f);
 
 
-  
-  new GLUI_Column( glui, false );
+  new GLUI_Separator(glui);
+  //new GLUI_Column( glui, false );
   glui->add_statictext("Simulation Parameters"); 
   glui->add_checkbox("Warm Starting", &settings.enable_warm_starting);
   glui->add_checkbox("Time of Impact", &settings.enable_continuous);
@@ -95,7 +96,8 @@ void create_glui_ui(void)
 
 
   
-  new GLUI_Column( glui, false );
+  //new GLUI_Column( glui, false );
+  new GLUI_Separator(glui);
   glui->add_statictext("Display Options"); 
   GLUI_Panel* drawPanel =	glui->add_panel("Draw");
   glui->add_checkbox_to_panel(drawPanel, "Shapes", &settings.draw_shapes);
@@ -104,13 +106,19 @@ void create_glui_ui(void)
   glui->add_checkbox_to_panel(drawPanel, "Statistics", &settings.draw_stats);
   glui->add_checkbox_to_panel(drawPanel, "Profile", &settings.draw_profile);
   
-  new GLUI_Column( glui, false );
+  //new GLUI_Column( glui, false );
+  new GLUI_Separator(glui);
   glui->add_button("Pause", 0, callbacks_t::pause_cb);
   glui->add_button("Single Step", 0, callbacks_t::single_step_cb);
   glui->add_button("Restart", 0, callbacks_t::restart_cb);
-  
   glui->add_button("Quit", 0,(GLUI_Update_CB)callbacks_t::exit_cb);
   glui->set_main_gfx_window( main_window );
+
+  new GLUI_Separator(glui);
+  glui->add_statictext("Mayank Meghwanshi"); 
+  glui->add_statictext("Divyam Bansal"); 
+  glui->add_statictext("Jaswant Kumar"); 
+
 }
 
 

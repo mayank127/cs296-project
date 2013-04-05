@@ -295,6 +295,8 @@ namespace cs296
       jointDef1.localAnchorA.Set(0,0);
       jointDef1.localAnchorB.Set(0,0);
       jointDef1.collideConnected = false;
+      jointDef.upperAngle = 180*(3.14/180);
+      jointDef.enableLimit = true;
       m_world->CreateJoint(&jointDef1);
 
 
@@ -400,10 +402,71 @@ namespace cs296
       b2PolygonShape shape5;
       shape5.SetAsBox(4.0f, 0.25f, b2Vec2(0.f,0.f), 0.5f);
   
+
       b2BodyDef bd5;
       bd5.position.Set(7.0f, 10.0f);
       b2Body* body5 = m_world->CreateBody(&bd5);
       body5->CreateFixture(&shape5, 0.0f);
+
+
+      {
+        float x0 = 13.0f, y0 = 8.0, r= 8,init=-0.40;
+
+        b2Body* b1; 
+        b2EdgeShape shape; 
+        b2BodyDef bd;
+        b1 = m_world->CreateBody(&bd);
+        float x=x0 + r*init;
+        float y=y0 + r * sqrt(1 - init*init);
+        for(float i=init; i <=1.0; i+=0.05){
+          float tempx = x0 + r * i;
+          float tempy = y0 + r * sqrt(1 - i*i);
+          shape.Set(b2Vec2(tempx,tempy), b2Vec2(x, y));
+          b1->CreateFixture(&shape, 0.0f); 
+          x=tempx;
+          y=tempy;
+        }
+
+        r = 3.0;
+
+        x=x0 + r*init;
+        y=y0 + r * sqrt(1 - init*init);
+
+
+        for(float i=init; i <=1.0; i+=0.05){
+          float tempx = x0 + r * i;
+          float tempy = y0 + r * sqrt(1 - i*i);
+          shape.Set(b2Vec2(tempx,tempy), b2Vec2(x, y));
+          b1->CreateFixture(&shape, 0.0f); 
+          x=tempx;
+          y=tempy;
+        }
+
+        init = -1.0;
+        x=x0 - r*init;
+        y=y0 - r * sqrt(1 - init*init);
+        for(float i=init; i <-0.6; i+=0.05){
+          float tempx = x0 - r * i;
+          float tempy = y0 - r * sqrt(1 - i*i);
+          shape.Set(b2Vec2(tempx,tempy), b2Vec2(x, y));
+          b1->CreateFixture(&shape, 0.0f); 
+          x=tempx;
+          y=tempy;
+        }
+
+        r=8;
+        init = -1.0;
+        x=x0 - r*init;
+        y=y0 - r * sqrt(1 - init*init);
+        for(float i=init; i <-0.65; i+=0.05){
+          float tempx = x0 - r * i;
+          float tempy = y0 - r * sqrt(1 - i*i);
+          shape.Set(b2Vec2(tempx,tempy), b2Vec2(x, y));
+          b1->CreateFixture(&shape, 0.0f); 
+          x=tempx;
+          y=tempy;
+        }
+      }
     }
 
 
@@ -493,7 +556,499 @@ namespace cs296
       m_world->CreateJoint(&jd);
     }
     
+    //curves
+    {
+      float x0 = -30.0f, y0 = 15.0, r= 20,init=-0.40;
 
+      b2Body* b1; 
+      b2EdgeShape shape; 
+      b2BodyDef bd;
+      b1 = m_world->CreateBody(&bd);
+      float x=x0 - r*init;
+      float y=y0 - r * sqrt(1 - init*init);
+      for(float i=init; i <1.0; i+=0.05){
+        float tempx = x0 - r * i;
+        float tempy = y0 - r * sqrt(1 - i*i);
+        shape.Set(b2Vec2(tempx,tempy), b2Vec2(x, y));
+        b1->CreateFixture(&shape, 0.0f); 
+        x=tempx;
+        y=tempy;
+      }
+      shape.Set(b2Vec2(-50.0,50), b2Vec2(x, y));
+      b1->CreateFixture(&shape, 0.0f);
+
+      x0 = -5.0;
+      y0 = 20.0;
+      r = 30.0;
+      init = -0.80;
+      x=x0 - r*init;
+      y=y0 - r * sqrt(1 - init*init);
+
+      // shape.Set(b2Vec2(18,50), b2Vec2(x, y));
+      // b1->CreateFixture(&shape, 0.0f);
+
+      for(float i=init; i <-0.05; i+=0.05){
+        float tempx = x0 - r * i;
+        float tempy = y0 - r * sqrt(1 - i*i);
+        shape.Set(b2Vec2(tempx,tempy), b2Vec2(x, y));
+        b1->CreateFixture(&shape, 0.0f); 
+        x=tempx;
+        y=tempy;
+      }
+      init = 0.05;
+      x=x0 - r*init;
+      y=y0 - r * sqrt(1 - init*init);
+      for(float i=init; i <0.6; i+=0.05){
+        float tempx = x0 - r * i;
+        float tempy = y0 - r * sqrt(1 - i*i);
+        shape.Set(b2Vec2(tempx,tempy), b2Vec2(x, y));
+        b1->CreateFixture(&shape, 0.0f); 
+        x=tempx;
+        y=tempy;
+      }
+
+    }
+
+    //domino system
+    {
+      b2PolygonShape shape;
+      shape.SetAsBox(8.0f, 0.2f);
+  
+      b2BodyDef bd;
+      bd.position.Set(-8.0f, -35.0f);
+      bd.type = b2_dynamicBody;
+      b2Body* body = m_world->CreateBody(&bd);
+      b2FixtureDef *fd = new b2FixtureDef;
+      fd->density = 1.0f;
+      fd->shape = new b2PolygonShape;
+      fd->shape = &shape;
+      body->CreateFixture(fd);
+
+      shape.SetAsBox(0.2f,10.0f,b2Vec2(-8.0,9.0),0);
+      body->CreateFixture(fd);
+
+      for (int i=0;i<3;i++){ //change to 3
+        shape.SetAsBox(3.0f,0.2f,b2Vec2(-11.0f,2.1+i*6.0f),0.2);
+        body->CreateFixture(fd);
+      }
+
+      b2PolygonShape shape2;
+      shape2.SetAsBox(0.2f, 2.0f);
+      b2BodyDef bd2;
+      bd2.position.Set(-8.0f, -35.0f);
+      b2Body* body2 = m_world->CreateBody(&bd2);
+
+
+      b2RevoluteJointDef jointDef;
+      jointDef.bodyA = body;
+      jointDef.bodyB = body2;
+      jointDef.localAnchorA.Set(0,0);
+      jointDef.localAnchorB.Set(0,0);
+      jointDef.collideConnected = false;
+      //jointDef.lowerAngle = 180*(3.14/180);
+      jointDef.upperAngle = 5*(3.14/180);
+      jointDef.enableLimit = true;
+      m_world->CreateJoint(&jointDef);
+
+
+      b2Body* sbody;
+      b2CircleShape circle;
+      circle.m_radius = 1.0;
+      
+      b2FixtureDef ballfd;
+      ballfd.shape = &circle;
+      ballfd.density = 1.0f;
+      ballfd.friction = 0.0f;
+      ballfd.restitution = 0.0f;
+      b2BodyDef ballbd;
+      ballbd.type = b2_dynamicBody;
+      
+      for(int i=0;i<3;i++){
+        ballbd.position.Set(-17.0, -32.0f + i*6.0f);
+        sbody = m_world->CreateBody(&ballbd);
+        sbody->CreateFixture(&ballfd);
+      }
+
+      {
+        b2PolygonShape shape;
+        shape.SetAsBox(10.0f, 0.2f);
+        b2FixtureDef *fd = new b2FixtureDef;
+        fd->density = 1.0f;
+        fd->shape = new b2PolygonShape;
+        fd->shape = &shape;
+        b2BodyDef bd;
+        for(int i=0;i<3;i++){
+          bd.position.Set(-32.5f, -33.0f + i*6.0f);
+          b2Body* body = m_world->CreateBody(&bd);
+          body->CreateFixture(fd);
+        }
+      }
+
+      {
+        b2PolygonShape shape;
+        shape.SetAsBox(0.2f, 2.0f);
+        b2FixtureDef *fd = new b2FixtureDef;
+        fd->density = 0.5f;
+        fd->shape = new b2PolygonShape;
+        fd->shape = &shape;
+        b2BodyDef bd;
+        bd.type = b2_dynamicBody;
+        for(int i=0;i<3;i++){
+          for(int j=0;j<10;j++){
+            bd.position.Set(-23.5f - j*2.0f, -28.5f + i*6.0f);
+            b2Body* body = m_world->CreateBody(&bd);
+            body->CreateFixture(fd);
+          }
+        }
+      }
+
+    }
+
+
+    //curves two
+    {
+      float x0 = -30.0f, y0 = 15.0, r= 20,init=-0.40;
+
+      b2Body* b1; 
+      b2EdgeShape shape; 
+      b2BodyDef bd;
+      b1 = m_world->CreateBody(&bd);
+      float x=x0 - r*init;
+      float y=y0 - r * sqrt(1 - init*init);
+
+
+      x0 = -5.0;
+      y0 = -10.0;
+      r = 30.0;
+      init = -0.80;
+      x=x0 - r*init;
+      y=y0 - r * sqrt(1 - init*init);
+
+
+      for(float i=init; i <-0.05; i+=0.05){
+        float tempx = x0 - r * i;
+        float tempy = y0 - r * sqrt(1 - i*i);
+        shape.Set(b2Vec2(tempx,tempy), b2Vec2(x, y));
+        b1->CreateFixture(&shape, 0.0f); 
+        x=tempx;
+        y=tempy;
+      }
+
+      shape.Set(b2Vec2(x,y-2), b2Vec2(x, y));
+      b1->CreateFixture(&shape, 0.0f);
+      shape.Set(b2Vec2(x,y-2), b2Vec2(x-4, y-2));
+      b1->CreateFixture(&shape, 0.0f);
+      shape.Set(b2Vec2(x-4,y), b2Vec2(x-4, y-2));
+      b1->CreateFixture(&shape, 0.0f);
+
+
+      x=x-4;
+      y=y;
+
+
+
+      shape.Set(b2Vec2(x,y), b2Vec2(x-30, y-1.5f));
+      b1->CreateFixture(&shape, 0.0f);
+
+      {
+        b2PolygonShape shape1;
+        shape1.SetAsBox(12.0f, 0.2f);
+        
+        b2BodyDef bd;
+        bd.position.Set(x-35, y-4);
+        bd.type = b2_dynamicBody;
+        b2Body* body = m_world->CreateBody(&bd);
+        b2FixtureDef *fd = new b2FixtureDef;
+        fd->density = 1.0f;
+        fd->shape = new b2PolygonShape;
+        fd->shape = &shape1;
+        body->CreateFixture(fd);
+
+        b2PolygonShape shape2;
+        shape2.SetAsBox(0.2f, 2.0f);
+        b2BodyDef bd2;
+        bd2.position.Set(x-35,y-4);
+        b2Body* body2 = m_world->CreateBody(&bd2);
+
+
+        b2RevoluteJointDef jointDef;
+        jointDef.bodyA = body;
+        jointDef.bodyB = body2;
+        jointDef.localAnchorA.Set(0,0);
+        jointDef.localAnchorB.Set(0,0);
+        jointDef.collideConnected = false;
+        m_world->CreateJoint(&jointDef);
+      }
+
+      shape.Set(b2Vec2(x-50,50), b2Vec2(x-50, -85));
+      b1->CreateFixture(&shape, 0.0f);
+      shape.Set(b2Vec2(50,-85), b2Vec2(x-50, -85));
+      b1->CreateFixture(&shape, 0.0f);
+    }
+
+    //pendulum group
+    
+    {
+
+      b2Body* sbody;
+      b2CircleShape circle;
+      circle.m_radius = 1.0;
+      
+      b2FixtureDef ballfd;
+      ballfd.shape = &circle;
+      ballfd.density = 2.0f;
+      ballfd.friction = 0.0f;
+      ballfd.restitution = 0.0f;
+      b2BodyDef ballbd;
+      ballbd.type = b2_dynamicBody;
+
+      
+
+      b2Body* b2;
+    
+      b2PolygonShape shape1;
+      shape1.SetAsBox(0.25f, 0.25f);
+    
+  
+      b2RevoluteJointDef jd;
+      b2Vec2 anchor;
+
+      for(int i=0;i<6;i++){
+        ballbd.position.Set(-53.5f+i*2.0, -55.0f);
+        sbody = m_world->CreateBody(&ballbd);
+        sbody->CreateFixture(&ballfd);
+        anchor.Set(-53.5f+i*2.0f, -46.0f);
+
+        b2BodyDef bd;
+        bd.position.Set(-53.5f+i*2.0f, -46.0f);
+        b2 = m_world->CreateBody(&bd);
+        b2->CreateFixture(&shape1, 10.0f);
+        jd.Initialize(b2, sbody, anchor);
+        m_world->CreateJoint(&jd);
+      }
+
+      {
+        b2Body* b1; 
+        b2EdgeShape shape; 
+        b2BodyDef bd;
+        b1 = m_world->CreateBody(&bd);
+        shape.Set(b2Vec2(-41.0,-58), b2Vec2(-22.0, -58));
+        b1->CreateFixture(&shape, 0.0f);
+      }
+      {
+        b2PolygonShape shape;
+        shape.SetAsBox(0.2f, 2.0f);
+        b2FixtureDef *fd = new b2FixtureDef;
+        fd->density = 5.0f;
+        fd->shape = new b2PolygonShape;
+        fd->shape = &shape;
+        b2BodyDef bd;
+        bd.type = b2_dynamicBody;
+        for(int j=0;j<10;j++){
+          bd.position.Set(-41.0f + j*2.0f, -56.0f);
+          b2Body* body = m_world->CreateBody(&bd);
+          body->CreateFixture(fd);
+        }
+      }
+    }
+
+    //new below domino system
+
+    {
+      b2PolygonShape shape;
+      shape.SetAsBox(8.0f, 0.2f);
+  
+      b2BodyDef bd;
+      bd.position.Set(-25.5f, -65.0f);
+      bd.type = b2_dynamicBody;
+      b2Body* body = m_world->CreateBody(&bd);
+      b2FixtureDef *fd = new b2FixtureDef;
+      fd->density = 1.0f;
+      fd->shape = new b2PolygonShape;
+      fd->shape = &shape;
+      body->CreateFixture(fd);
+
+      b2PolygonShape shape2;
+      shape2.SetAsBox(0.2f, 2.0f);
+      b2BodyDef bd2;
+      bd2.position.Set(-25.5f, -65.0f);
+      b2Body* body2 = m_world->CreateBody(&bd2);
+
+
+      b2RevoluteJointDef jointDef;
+      jointDef.bodyA = body;
+      jointDef.bodyB = body2;
+      jointDef.localAnchorA.Set(0,0);
+      jointDef.localAnchorB.Set(0,0);
+      jointDef.collideConnected = false;
+      //jointDef.lowerAngle = 180*(3.14/180);
+      jointDef.upperAngle = 20*(3.14/180);
+      jointDef.enableLimit = true;
+      m_world->CreateJoint(&jointDef);
+
+      
+      b2Body* sbody;
+      b2CircleShape circle;
+      circle.m_radius = 1.0;
+      b2FixtureDef ballfd;
+      ballfd.shape = &circle;
+      ballfd.density = 50.0f;
+      ballfd.friction = 0.0f;
+      ballfd.restitution = 0.0f;
+      b2BodyDef ballbd;
+      ballbd.type = b2_dynamicBody;
+      ballbd.position.Set(-15, -65.0f);
+      sbody = m_world->CreateBody(&ballbd);
+      sbody->CreateFixture(&ballfd);
+
+      {
+        b2Body* b1; 
+        b2EdgeShape shape; 
+        b2BodyDef bd;
+        b1 = m_world->CreateBody(&bd);
+        shape.Set(b2Vec2(-17.0,-70), b2Vec2(-14.5, -70));
+        b1->CreateFixture(&shape, 0.0f);
+        shape.Set(b2Vec2(-14.5,-70), b2Vec2(17.0, -76));
+        b1->CreateFixture(&shape, 0.0f);
+        // shape.Set(b2Vec2(-18.5,-68), b2Vec2(-18.5, -66));
+        // b1->CreateFixture(&shape, 0.0f);
+        
+        b2Body* sbody;
+        b2CircleShape circle;
+        circle.m_radius = 0.8;
+        b2FixtureDef ballfd;
+        ballfd.shape = &circle;
+        ballfd.density = 10.0f;
+        ballfd.friction = 0.0f;
+        ballfd.restitution = 0.0f;
+        b2BodyDef ballbd;
+        ballbd.type = b2_dynamicBody;
+        ballbd.position.Set(-15.0, -69.0f);
+        sbody = m_world->CreateBody(&ballbd);
+        sbody->CreateFixture(&ballfd);
+      }
+
+
+      {
+        b2PolygonShape shape;
+        shape.SetAsBox(7.0f, 0.2f);
+    
+        b2BodyDef bd;
+        bd.position.Set(-10.0f, -67.0f);
+        bd.type = b2_dynamicBody;
+        b2Body* body = m_world->CreateBody(&bd);
+        b2FixtureDef *fd = new b2FixtureDef;
+        fd->density = 1.0f;
+        fd->shape = new b2PolygonShape;
+        fd->shape = &shape;
+        body->CreateFixture(fd);
+
+        b2PolygonShape shape2;
+        shape2.SetAsBox(0.2f, 2.0f);
+        b2BodyDef bd2;
+        bd2.position.Set(-3.0f, -67.0f);
+        b2Body* body2 = m_world->CreateBody(&bd2);
+
+
+        b2RevoluteJointDef jointDef;
+        jointDef.bodyA = body;
+        jointDef.bodyB = body2;
+        jointDef.localAnchorA.Set(7.0,0);
+        jointDef.localAnchorB.Set(0,0);
+        jointDef.collideConnected = false;
+        m_world->CreateJoint(&jointDef);
+
+
+
+
+        b2PolygonShape shape1;
+        shape1.SetAsBox(1.0f, 1.0f);
+    
+        b2BodyDef bd1;
+        bd1.position.Set(16.7f, -75);
+        bd1.type = b2_dynamicBody;
+        b2Body* body1 = m_world->CreateBody(&bd1);
+        b2FixtureDef *fd1 = new b2FixtureDef;
+        fd1->density = 500.0f;
+        fd1->shape = new b2PolygonShape;
+        fd1->shape = &shape1;
+        body1->CreateFixture(fd1);
+
+        
+
+
+
+
+        b2PulleyJointDef* myjoint = new b2PulleyJointDef();
+        b2Vec2 worldAnchorOnBody1(-17.0,-67.0); 
+        b2Vec2 worldAnchorOnBody2(16.7, -75); 
+        b2Vec2 worldAnchorGround1(-17.0,-55);
+        b2Vec2 worldAnchorGround2(16.7f, -55);
+        float32 ratio = 1.0f;
+        myjoint->Initialize(body, body1, worldAnchorGround1, worldAnchorGround2, worldAnchorOnBody1, worldAnchorOnBody2, ratio);
+        m_world->CreateJoint(myjoint);
+      }
+
+    }
+
+
+    //curves + balls
+    {
+      float x0 = 5.0f, y0 = -62.0, r= 15,init=-0.40;
+
+      b2Body* b1; 
+      b2EdgeShape shape; 
+      b2BodyDef bd;
+      b1 = m_world->CreateBody(&bd);
+      float x=x0 + r*init;
+      float y=y0 + r * sqrt(1 - init*init);
+      for(float i=init; i <=1.0; i+=0.05){
+        float tempx = x0 + r * i;
+        float tempy = y0 + r * sqrt(1 - i*i);
+        shape.Set(b2Vec2(tempx,tempy), b2Vec2(x, y));
+        b1->CreateFixture(&shape, 0.0f); 
+        x=tempx;
+        y=tempy;
+      }
+
+      shape.Set(b2Vec2(x,y-3), b2Vec2(x, y));
+      b1->CreateFixture(&shape, 0.0f); 
+      shape.Set(b2Vec2(x,y-3), b2Vec2(x+20, y-3));
+      b1->CreateFixture(&shape, 0.0f); 
+
+      r = 20.0;
+      x=x0 + r*init;
+      y=y0 + r * sqrt(1 - init*init);
+
+
+      for(float i=init; i <=1.0; i+=0.05){
+        float tempx = x0 + r * i;
+        float tempy = y0 + r * sqrt(1 - i*i);
+        shape.Set(b2Vec2(tempx,tempy), b2Vec2(x, y));
+        b1->CreateFixture(&shape, 0.0f); 
+        x=tempx;
+        y=tempy;
+      }
+
+      {
+        b2Body* sbody;
+        b2CircleShape circle;
+        circle.m_radius = 2.0;
+        b2FixtureDef ballfd;
+        ballfd.shape = &circle;
+        ballfd.density = 5.0f;
+        ballfd.friction = 0.0f;
+        ballfd.restitution = 0.0f;
+        b2BodyDef ballbd;
+        ballbd.type = b2_dynamicBody;
+        for(int i=0;i<5;i++){
+          ballbd.position.Set(x-1 + i*4, y-2);
+          sbody = m_world->CreateBody(&ballbd);
+          sbody->CreateFixture(&ballfd);
+        }
+      }
+      
+    }
 
 
 
