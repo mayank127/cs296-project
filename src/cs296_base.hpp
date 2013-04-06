@@ -55,7 +55,7 @@ namespace cs296
     //! It is the constructor for struct settings_t.
     //! It is a way of initialising struct members where value of each member is set to the value inside parenthesis.
     settings_t() :
-      view_center(0.0f, -10.0f),
+      view_center(20.0f, -23.0f),
       hz(60.0f),
       velocity_iterations(8),
       position_iterations(3),

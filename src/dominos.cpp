@@ -134,7 +134,7 @@ namespace cs296
     }
 
 
-    //!##The pulley system
+    //!##The pulley system with basket and platform
     {
       b2BodyDef *bd = new b2BodyDef;
       bd->type = b2_dynamicBody;
@@ -190,7 +190,7 @@ namespace cs296
     }
 
 
-    //rotating platform 1 with ball
+    //rotating platform 1 with ball which is hit by pullry on right 
     {
       b2PolygonShape shape;
       shape.SetAsBox(2.2f, 0.2f);
@@ -236,7 +236,7 @@ namespace cs296
     }
 
 
-    // rotating platform 2 pulle platform 4 ball
+    // rotating platform 2 pulley 2 platform 4 ball
     {
       b2PolygonShape shape;
       shape.SetAsBox(4.0f, 0.2f);
@@ -343,7 +343,7 @@ namespace cs296
     }
 
 
-    //hammer platform and angle
+    //hammer, platform , tilted platform, curved tunnel
 
     {
 
@@ -470,7 +470,7 @@ namespace cs296
     }
 
 
-    //rotating machine pt1
+    //rotating machine pt1 which is hit by pulley 1basket
     {
       float a[] = {-34.0,-37.0,-40.0};
       float b[] = {5.0,6.5,5.0};
@@ -507,7 +507,7 @@ namespace cs296
 
     }
 
-    //bucket pendulum
+    //bucket pendulum which contains ball 
     {
 
       b2BodyDef *bd = new b2BodyDef;
@@ -556,7 +556,7 @@ namespace cs296
       m_world->CreateJoint(&jd);
     }
     
-    //curves
+    //curves at the middle of the design with a hole using parametric equation
     {
       float x0 = -30.0f, y0 = 15.0, r= 20,init=-0.40;
 
@@ -609,7 +609,7 @@ namespace cs296
 
     }
 
-    //domino system
+    //rotating platform with shelves for balls which then hits dominos
     {
       b2PolygonShape shape;
       shape.SetAsBox(8.0f, 0.2f);
@@ -705,7 +705,7 @@ namespace cs296
     }
 
 
-    //curves two
+    //curve below domino system with  a gap to contain two balls + a rotatin platform +   boundary of whole simulation + water platform for bot at the end
     {
       float x0 = -30.0f, y0 = 15.0, r= 20,init=-0.40;
 
@@ -780,17 +780,35 @@ namespace cs296
         m_world->CreateJoint(&jointDef);
       }
 
-      shape.Set(b2Vec2(x-50,50), b2Vec2(x-50, -85));
+
+      //boundary
+      shape.Set(b2Vec2(x-50,50), b2Vec2(x-50, -85)); //change to -85 maybe
+      b1->CreateFixture(&shape, 0.0f); 
+      shape.Set(b2Vec2(86,-85), b2Vec2(x-50, -85));
       b1->CreateFixture(&shape, 0.0f);
-      shape.Set(b2Vec2(100,-85), b2Vec2(x-50, -85));
+      shape.Set(b2Vec2(90,-85), b2Vec2(100, -85));
       b1->CreateFixture(&shape, 0.0f);
       shape.Set(b2Vec2(100,-85), b2Vec2(100, 50));
       b1->CreateFixture(&shape, 0.0f);
       shape.Set(b2Vec2(x-50,50), b2Vec2(100, 50));
       b1->CreateFixture(&shape, 0.0f);
+
+      {
+        b2PolygonShape shape;
+        shape.SetAsBox((150-x)/2, 0.2f);
+        b2FixtureDef *fd = new b2FixtureDef;
+        fd->density = 1.0f;
+        fd->friction = 0.0f;
+        fd->shape = new b2PolygonShape;
+        fd->shape = &shape;
+        b2BodyDef bd;
+        bd.position.Set((50+x)/2, -95.0f );
+        b2Body* body = m_world->CreateBody(&bd);
+        body->CreateFixture(fd);
+      }
     }
 
-    //pendulum group
+    //pendulum group of 6 pendulum + dominos with 10 domino
     
     {
 
@@ -856,7 +874,7 @@ namespace cs296
       }
     }
 
-    //new below domino system
+    //platform below domnios + ball platform which hits heavy mass with pulley to shoot the ball 
 
     {
       b2PolygonShape shape;
@@ -996,7 +1014,7 @@ namespace cs296
     }
 
 
-    //curves + balls
+    //tunnel through which ball goes to hit big balls + big balls + motor to hit balls
     {
       float x0 = 5.0f, y0 = -62.0, r= 15,init=-0.40;
 
@@ -1088,6 +1106,7 @@ namespace cs296
         m_world->CreateJoint(&jointDef);    
        }
 
+       //system to replace piston a Z
        {
 				b2PolygonShape shape;
         shape.SetAsBox(6.0f, 0.2f);
@@ -1101,9 +1120,9 @@ namespace cs296
         fd->shape = new b2PolygonShape;
         fd->shape = &shape;
         body->CreateFixture(fd);
-        shape.SetAsBox(0.2f,6.0f,b2Vec2(-6,-6),0);
+        shape.SetAsBox(0.2f,12.0f,b2Vec2(-6,-12),0);
         body->CreateFixture(fd);
-				shape.SetAsBox(2.0f,0.2f,b2Vec2(-8,-12),0);
+				shape.SetAsBox(2.0f,0.2f,b2Vec2(-8,-24),0);
         body->CreateFixture(fd);
 
 
@@ -1129,11 +1148,42 @@ namespace cs296
         b2EdgeShape shape; 
         b2BodyDef bd;
         b1 = m_world->CreateBody(&bd);
-        shape.Set(b2Vec2(88.0,-69), b2Vec2(88.0, -60));
+        shape.Set(b2Vec2(88.0,-69), b2Vec2(88.0, -64));
         b1->CreateFixture(&shape, 0.0f);
         // shape.Set(b2Vec2(88.0,-69), b2Vec2(88.0, -60));
         // b1->CreateFixture(&shape, 0.0f);
       }
+      
+      //boat
+      {
+        b2PolygonShape shape;
+        // b2Vec2 vertices[4];
+        // vertices[0].Set(-3,2);
+        // vertices[1].Set(3,2);
+        // vertices[2].Set(2,-2);
+        // vertices[3].Set(-2,-2);
+        // shape.Set(vertices, 4);
+        b2Vec2 vertices[4];
+        vertices[1].Set(-5,1);
+        vertices[3].Set(2,-2.5);
+        vertices[0].Set(5,1);
+        vertices[2].Set(-2,-2.5);
+        shape.Set(vertices, 4);
+        //shape.SetAsBox(3,2);
+
+        b2BodyDef bd;
+        bd.position.Set(80.0f, -90.0f);
+        bd.type = b2_dynamicBody;
+        b2Body* body = m_world->CreateBody(&bd);
+        b2FixtureDef *fd = new b2FixtureDef;
+        fd->density = 0.1f;
+        fd->friction = 0.0f;
+        fd->shape = new b2PolygonShape;
+        fd->shape = &shape;
+        body->CreateFixture(fd);
+        
+      }
+
     }
 
 
