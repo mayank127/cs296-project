@@ -6,3 +6,7 @@ external/src/Box2D
 doc/html
 test
 *~
+*.aux
+*.log
+*.dvi
+*.ps
