@@ -41,6 +41,42 @@ namespace cs296
   {
     
   	//Pendulum
+//!##The pendulum that kicks the first ball kept on horizontal bar
+/*!
+        <I><B>Vertical Bar</B></I>
+          ###b2PolygonShape shape;
+            "shape" is a polygon shape object which is a square box object representing the vertical bar . 
+            Its width is 0.25m, height is 0.25m.
+          ###b2BodyDef bd;
+            bd is body definition and its position is set to (-30.5,36.0) .
+          ###b2Body* b2;
+            b2 is a pointer to rigid body object which is the vertical bar.
+
+          "b2" is passed to world object to create the pointer to vertical body which is saved in "b2" variable.
+          Then CreateFixture function is called to set the shape and density of the "b2" object.
+          Here its density is 10.0 and shape is of a polygon object defined by "shape" variable.
+      */
+
+/*!
+          <I><B>Pendulum Bob</B></I>
+            ###b2PolygonShape shape;
+              "shape" is a polygon shape object which is a rectangle box object representing the pendulum bob. 
+              Its width is 0.4m, height is 0.5m.
+            ###b2BodyDef bd;
+              bd is body definition and its position is set to (-25.0,33.0) and its a dynamic object.
+            ###b2Body* b4;
+              b4 is a pointer to rigid body object which is the pendulum bob.
+            ###b2RevoluteJointDef jd;
+              "jd" is revolute joint definition, which forces two bodies to share a common hinge around which they can rotate.
+            ###b2Vec2 anchor;
+              "anchor" is a fixed point of type b2Vec2 common to both bodies needed by the revolute joint for the hinge. Its co-ordinates 
+              are (-30.5, 40.0)
+
+            "bd" is passed to world object to create the pointer to pendulum bob which is saved in "b4" variable.
+            Then CreateFixture function is called to set the shape and density of the "b4" object.
+            Here its density is 100.0 and shape is of a polygon object defined by "shape" variable.
+            "jd" is initialised to vertical bar and pendulum bob object and one common point anchor. 
+        */
     {
       b2Body* b2;
       {
@@ -77,6 +113,21 @@ namespace cs296
     }
 
     //platforms
+/*!##Horizontal Platforms
+      ###b2PolygonShape shape;
+        "shape" is a polygon shape object which is a rectangle box object representing shelf for spheres placement. 
+        Its width is 3.50m, height is 0.25m, centre is (20.0,20.0) relative to (1.0,6.0) and angle with horizontal is 0.
+      ###b2BodyDef bd;
+        bd is body definition and its position is set to (1.0,6.0) .
+      ###b2Body* ground;
+        ground is a pointer to rigid body object which is the horizontal shelf.
+      
+      This is the shelf on which the last domino falls and pushes the train of spheres. 
+      "bd" is passed to world object to create the pointer to rectangular shelf body which is saved in "ground" variable.
+      By default "bd" is static body.
+      Then CreateFixture function is called to set the shape and density of the "ground" object.
+      Here its density is 0 and shape is of a polygon object defined by "shape" variable.
+    */
 	  {
 			b2PolygonShape shape;
 			shape.SetAsBox(3.5f, 0.25f);
