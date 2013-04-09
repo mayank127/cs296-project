@@ -113,21 +113,49 @@ namespace cs296
     }
 
     //platforms
-/*!##Horizontal Platforms
+//!##Horizontal Platforms with attached vertical bars
+	/*!<I><B>Horizontal Bars</B></I>
       ###b2PolygonShape shape;
         "shape" is a polygon shape object which is a rectangle box object representing shelf for spheres placement. 
-        Its width is 3.50m, height is 0.25m, centre is (20.0,20.0) relative to (1.0,6.0) and angle with horizontal is 0.
+        Its width is 3.50m, height is 0.25m.
       ###b2BodyDef bd;
-        bd is body definition and its position is set to (1.0,6.0) .
+        bd is body definition  .
       ###b2Body* ground;
         ground is a pointer to rigid body object which is the horizontal shelf.
       
-      This is the shelf on which the last domino falls and pushes the train of spheres. 
+      These are the four platform on which spheres are kept and they start moving upon being hit by some other object.
+      Position for each platform is -36.0 f as x- cordinate and they are kept at a distance of 4 m in vertical.
+      So by running in it loop 4 such bars are created.
       "bd" is passed to world object to create the pointer to rectangular shelf body which is saved in "ground" variable.
       By default "bd" is static body.
       Then CreateFixture function is called to set the shape and density of the "ground" object.
       Here its density is 0 and shape is of a polygon object defined by "shape" variable.
     */
+    /*!<I><B>Vertical Bars</B></I>
+      ###b2PolygonShape shape;
+        "shape" is a polygon shape object which is a rectangle box object representing shelf for spheres placement. 
+        Its width is 0.2m, height is 1.6m.
+      ###b2BodyDef bd1;
+        bd1 is body definition  .
+      ###b2Body* body;
+        body is a pointer to rigid body object which is the vertical bar.
+      ###b2FixtureDef *fd;
+		this variable will store the properties of the vertical bar.
+		###b2RevoluteJointDef jointDef;
+		 this variable is for the joint between vertical bar and horizontal bar.
+      
+      
+      These are the four bars which are hinged with the vertical bar, and they start rotating as soon as hit by a ball.
+      Position for each platform is at the corner of horizontal bar.
+      So by running in it loop 4 such bars are created.
+      "bd" is passed to world object to create the pointer to rectangular shelf body which is saved in "ground" variable.
+      By default "bd1" is static body.
+      Then CreateFixture function is called to set the shape and density of the "body" object.
+      Here its density is 50 and shape is of a polygon object defined by "shape" variable.
+      Position is set for both the anchors point respective to bodies.
+    */
+    
+    
 	  {
 			b2PolygonShape shape;
 			shape.SetAsBox(3.5f, 0.25f);
@@ -163,6 +191,24 @@ namespace cs296
 
 
 	  //balls
+	   /*!##Balls kept on horizontal platform
+        ###b2CircleShape circle;
+          "circle" is a circular object of radius 1m. This is the size of a sphere present on the platform.
+        ###b2FixtureDef ballfd;
+          "ballfd" is a fixture definition whose shape is set by the above defined variable "circle" i.e of a circle, 
+          density is set as 5 Kg/m^2, friction and restitution coefficient are set as 0.0. 
+        ###b2BodyDef ballbd;
+          "ballbd" is body definition and its position is set inside the for loop , 
+          where "i" varies from 0 to 4. In each iteration a new circular object (sphere) is made. "ballbd" is a dynamic type object.  
+        ###b2Body* sbody;
+          "sbody" is a pointer to rigid body object which is a sphere.
+        
+        After defining common fixture definitions, a for loop is used in which in each iteration 
+        "ballbd" is passed to world object to create the pointer to a new sphere object at a distance of 4m from the previous
+        body. This pointer is saved in "spherebody" variable. 
+        Then CreateFixture function is called to set fixtures of the "sbody" (sphere) object using fixture definition of "ballfd".
+        Finally it creates 4 spheres.
+    */
 	  {
       b2Body* sbody;
       b2CircleShape circle;
@@ -186,6 +232,23 @@ namespace cs296
 
 
     //!##The pulley system with basket and platform
+    /*!
+     * ###b2BodyDef *bd;
+     * bd is body definition and its type is set as dyamic bodywith position as -30,10
+     * ###b2PolygonShape bs1;
+     * bs1 is a polygon defined here.
+     * ###b2FixtureDef *fd1 
+     * it contains the properties for body bs1, like density = 10, friction = 5, restitution =0.
+     * 
+     * Similarly it is done for bs2, fd2, bs3, fd3. These all represents the three walls of the box.
+     * ###b2Body* box1;
+     * This refers to the box hanging on the left side of pulley and by setting its fixture, all three walls are assigned to it.
+     * Then for the horizontal bar hanging on the right seide of pulley, position of bd is modified and density is changed to 44 so that it only starts lifting when the box contain atleast 2 balls.
+     * ###b2PulleyJointDef* myjoint;
+     * This joint will ensure the proper functioning of pulley. It has been initialized to proper positions.
+     * 
+     * As the two balls fall in the bucket, it starts lowering and the platform on other side starts lifting and then they have corresponding consequences.
+     */
     {
       b2BodyDef *bd = new b2BodyDef;
       bd->type = b2_dynamicBody;
@@ -242,6 +305,12 @@ namespace cs296
 
 
     //rotating platform 1 with ball which is hit by pullry on right 
+    //! Rotating platform with a ball kept on it
+    /*!###b2PolygonShape shape
+     * It is a polygon shape object whose dimensions are set as 2.2,0.2
+     * ###b2BodyDef bd 
+     * 
+     * */
     {
       b2PolygonShape shape;
       shape.SetAsBox(2.2f, 0.2f);
