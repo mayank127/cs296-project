@@ -1,3 +1,5 @@
+
+
 /*
 * Copyright (c) 2006-2009 Erin Catto http://!www.box2d.org
 *
@@ -463,7 +465,17 @@ namespace cs296
     }
 
 
-    //hammer, platform , tilted platform, curved tunnel
+    //!hammer, platform , tilted platform, curved tunnel
+/*!
+###b2PolygonShape shape
+This is a shape variable whose size is set as 8x2.
+###b2BodyDef bd
+This body definition is for the horizontal bar placed under the hammer. its position is set as 0,8.
+###b2Body* body
+This variable refers to the above mentioned horizontal bar
+
+
+*/
 
     {
 
@@ -590,7 +602,7 @@ namespace cs296
     }
 
 
-    //rotating machine pt1 which is hit by pulley 1basket
+     //rotating machine pt1 which is hit by pulley 1basket
     {
       float a[] = {-34.0,-37.0,-40.0};
       float b[] = {5.0,6.5,5.0};
@@ -826,6 +838,17 @@ namespace cs296
 
 
     //curve below domino system with  a gap to contain two balls + a rotatin platform +   boundary of whole simulation + water platform for bot at the end
+    //
+    /*!##Curve below domino system and Boundary of simulation
+      ###b2Body* b1
+      This is the body object which acts as curved surface which holds three balls and also defines the boundary of the simulation.
+      ###b2EdgeShape shape
+      This defines the edge shape object which varies according to need sometime as a circular shape according to parametric equation and sometime as  boundary of the simulation.
+      ###b2BodyDef bd;
+      This defines the body defintion object for hre edge shape whic defines positon of the shape.
+
+      This actsas the boundary of the simulation and also it partions the simulation from center part and down part. This acts as pocket for three balls which are hold in the hole on the edge shape.
+    */
     {
       float x0 = -30.0f, y0 = 15.0, r= 20,init=-0.40;
 
@@ -867,9 +890,45 @@ namespace cs296
 
 
 
+
       shape.Set(b2Vec2(x,y), b2Vec2(x-30, y-1.5f));
       b1->CreateFixture(&shape, 0.0f);
 
+
+      //boundary
+
+      shape.Set(b2Vec2(x-50,50), b2Vec2(x-50, -85)); //change to -85 maybe
+      b1->CreateFixture(&shape, 0.0f); 
+      shape.Set(b2Vec2(86,-85), b2Vec2(x-50, -85));
+      b1->CreateFixture(&shape, 0.0f);
+      shape.Set(b2Vec2(90,-85), b2Vec2(100, -85));
+      b1->CreateFixture(&shape, 0.0f);
+      shape.Set(b2Vec2(100,-85), b2Vec2(100, 50));
+      b1->CreateFixture(&shape, 0.0f);
+      shape.Set(b2Vec2(x-50,50), b2Vec2(100, 50));
+      b1->CreateFixture(&shape, 0.0f);
+
+
+      /*!## Rotating Platform which slides ball towards pendulum group
+        ###b2PolygonShape shape 
+        This defines shape of object which consist of Box shaped object of size 24 x 0.4..
+        ###b2BodyDef bd 
+        Body definition of object platform at postion (x-35.y-4)) and body type dynamic.
+        ###b2Body* body 
+        body defines body which keep changing shape to make a platform object which tilts by falling of domino and which then gives direction to ball to hit pendulum sysytem.
+        ###b2FixtureDef *fd 
+        This is fixture definition of platform with density 1 and shape as abpve.
+        ###b2PolygonShape shape2 
+        This is the rectangular shaped object of width 4.0 and length 0.4.
+        ###b2BodyDef bd2 
+        Body definition of object whch sets postion at x-355, y-4 and make it static body.
+        ###b2Body* body2 
+        This defines the body representing hidden box which acts as hinge for the fructum.
+        ###b2RevoluteJointDef jointDef 
+        Joint Definition which joins body and body2 to make a rotating platform.
+
+        This is the object made to direct falling domino towards the ball which then rolls over it towards the pendulum group.
+       */ 
       {
         b2PolygonShape shape1;
         shape1.SetAsBox(12.0f, 0.2f);
@@ -901,17 +960,16 @@ namespace cs296
       }
 
 
-      //boundary
-      shape.Set(b2Vec2(x-50,50), b2Vec2(x-50, -85)); //change to -85 maybe
-      b1->CreateFixture(&shape, 0.0f); 
-      shape.Set(b2Vec2(86,-85), b2Vec2(x-50, -85));
-      b1->CreateFixture(&shape, 0.0f);
-      shape.Set(b2Vec2(90,-85), b2Vec2(100, -85));
-      b1->CreateFixture(&shape, 0.0f);
-      shape.Set(b2Vec2(100,-85), b2Vec2(100, 50));
-      b1->CreateFixture(&shape, 0.0f);
-      shape.Set(b2Vec2(x-50,50), b2Vec2(100, 50));
-      b1->CreateFixture(&shape, 0.0f);
+     /*!Platform on which boat moves
+        ###b2PolygonShape shape
+        This is a rectangular shaped object of size 150-x/2 * 0.4.
+        ###b2FixtureDef *fd 
+        This defines the fixture of platform as density 1 and friction as 0.0 so boat can slide on it.
+        ###b2BodyDef bd;
+        Body definiton of the object to place it at 50+x/2, -95
+        ###b2Body* body
+        Body object which is used as Sea object for the boat to move on it frictionlessly.
+     */
 
       {
         b2PolygonShape shape;
@@ -929,7 +987,22 @@ namespace cs296
     }
 
     //pendulum group of 6 pendulum + dominos with 10 domino
-    
+    /*!## Pendulum group 
+        ###b2CircleShape circle; 
+        "circle" is a circular object of radius 1m. 
+        ###b2FixtureDef ballfd; 
+        "ballfd" is a fixture definition whose shape is set by the above defined variable "circle" i.e of a circle, density is set as 2 Kg/m^2, friction and restitution coefficient are set as 0.0. 
+        ###b2BodyDef ballbd; 
+        "ballbd" is body definition and its position is set by for loop to make 6 different pendulum bob's.
+        ###b2Body* sBody; 
+        This is the body defining pendulum objects to make a series of pendulum which hit each other and finally hits domino to initialise their motion. 
+        ###b2Body* b2;   
+        This is the body which acts as hinge object fot the pendulum object.
+        ###b2PolygonShape shape1;
+        Shape of the hinge object is set as 0,5 x 0.5 and placed acording to for loop to make 6 hinges.
+
+        This is the pendulum series which at the end hits dominos objects which then hits the small ball.
+     */
     {
 
       b2Body* sbody;
@@ -968,7 +1041,22 @@ namespace cs296
         jd.Initialize(b2, sbody, anchor);
         m_world->CreateJoint(&jd);
       }
+      /*!##Domino System
+        ###b2Body* b1; 
+        Body reprsenting platform on which dominos are placed.
+        ###b2EdgeShape shape; 
+        This is the edge shape object joining -41,-58 to -22,-58.
+        ###b2BodyDef bd;
+        This defines the body definition of edge object to make platform for dominos.
+        ###b2PolygonShape shape; 
+        This is the domino object's shape of size 0.4 x 4.0. 
+        ###b2FixtureDef *fd;
+        This is the fixture definiton of object with denisty 5 and shape as defined above.
+        ###b2BodyDef bd;
+        This is body definition which keeps changing position to make 10 different domino object.
 
+        This platform and domino series is made to to hit the small ball kept at the platform below it which after it hits mass to make pulley move.
+      */
       {
         b2Body* b1; 
         b2EdgeShape shape; 
@@ -995,7 +1083,26 @@ namespace cs296
     }
 
     //platform below domnios + ball platform which hits heavy mass with pulley to shoot the ball 
+    /*!## Rotating Platform which slides Domino
+        ###b2PolygonShape shape 
+        This defines shape of object which consist of Box shaped object of size 16 x 0.4..
+        ###b2BodyDef bd 
+        Body definition of object platform at postion (-25.5,65)) and body type dynamic.
+        ###b2Body* body 
+        body defines body which keep changing shape to make a platfomr object which tilts by falling of domino and which then hits the ball.
+        ###b2FixtureDef *fd 
+        This is fixture definition of platform with density 1 and shape as abpve.
+        ###b2PolygonShape shape2 
+        This is the rectangular shaped object of width 4.0 and length 0.4.
+        ###b2BodyDef bd2 
+        Body definition of object whch sets postion at -25.5, -65 and make it static body.
+        ###b2Body* body2 
+        This defines the body representing hidden box which acts as hinge for the fructum.
+        ###b2RevoluteJointDef jointDef 
+        Joint Definition which joins body and body2 to make a rotating platform.
 
+        This is the object made to direct falling domino towards the ball which then hits mass object to pull pulley string.
+       */ 
     {
       b2PolygonShape shape;
       shape.SetAsBox(8.0f, 0.2f);
@@ -1028,6 +1135,19 @@ namespace cs296
       jointDef.enableLimit = true;
       m_world->CreateJoint(&jointDef);
 
+
+      /*!##Ball
+        ###b2CircleShape circle; 
+        "circle" is a circular object of radius 1m. 
+        ###b2FixtureDef ballfd; 
+        "ballfd" is a fixture definition whose shape is set by the above defined variable "circle" i.e of a circle, density is set as 50 Kg/m^2, friction and restitution coefficient are set as 0.0. 
+        ###b2BodyDef ballbd; 
+        "ballbd" is body definition and its position is set to (-15,-65)
+        ###b2Body* sBody; 
+        "sBody" is a pointer to rigid body object which is a sphere.
+
+        This body acts as the ball which hits Big Balls after jumping from pulley mechanism when strings are pulled from mass.
+      */
       
       b2Body* sbody;
       b2CircleShape circle;
@@ -1042,6 +1162,26 @@ namespace cs296
       ballbd.position.Set(-15, -65.0f);
       sbody = m_world->CreateBody(&ballbd);
       sbody->CreateFixture(&ballfd);
+
+      /*!##Slant edge and small ball
+        ###b2Body* b1; 
+        Body to represent slant edge on which small ball and mass is placed.
+        ###b2EdgeShape shape
+         Shape object to make the slant platform. -17.0,-70 to 17, -76
+        ###b2BodyDef bd 
+        Body definition of edge object.
+
+        ###b2CircleShape circle; 
+        "circle" is a circular object of radius 0.8m. 
+        ###b2FixtureDef ballfd; 
+        "ballfd" is a fixture definition whose shape is set by the above defined variable "circle" i.e of a circle, density is set as 10 Kg/m^2, friction and restitution coefficient are set as 0.0. 
+        ###b2BodyDef ballbd; 
+        "ballbd" is body definition and its position is set to (-15,-69)
+        ###b2Body* sBody; 
+        "sBody" is a pointer to rigid body object which is a sphere ball.
+
+        This platform is to place the small ball and mass which is attached to the pulley.
+       */
 
       {
         b2Body* b1; 
@@ -1070,7 +1210,37 @@ namespace cs296
         sbody->CreateFixture(&ballfd);
       }
 
+      /*!##Pulley with one end at rotating platform and one end at mass
+        ###b2PolygonShape shape 
+        This defines shape of object which consist of a rotating platform.
+        ###b2BodyDef bd 
+        Body definition of object platform at postion (-10,-67) and body type dynamic.
+        ###b2Body* body 
+        body defines body which keep changing shape to make a platform object. This acts as hitting bat for ball to move into tunnel.
+        ###b2FixtureDef *fd 
+        This is fixture definition of fructum with density 1 and shape mentioned above.
+        ###b2PolygonShape shape2 
+        This is the rectangular shaped object of width 4.0 and length 0.4.
+        ###b2BodyDef bd2 Body 
+        definition of object whch sets postion at -3,-67 and make it static body.
+        ###b2Body* body2 
+        This defines the body representing hidden box which acts as hinge for the fructum.
+        ###b2RevoluteJointDef jointDef 
+        Joint Definition which joins body and body2 to make a rotatable fructum to hit ball.
 
+        ###b2PolygonShape shape1 
+        This is square shape object with 2x2 size.
+        ###b2BodyDef bd1 
+        body definition at postion 16.7,-75 and a dynamic body.
+        ###b2Body* body1 
+        This defines mass object which pulls pulley's one end to pull one end of platform to make ball fly towards tunnel.
+        ###b2FixtureDef *fd1  
+        this is fixture definition of mass with density 500 to pull platform.
+        ###b2PulleyJointDef* myjoint 
+        this is the pulley object which acts as mechanism for flying the ball towards tunnel.
+
+          This defines mass object which pulls pulley's one end to pull one end of platform to make ball fly towards tunnel.
+       */
       {
         b2PolygonShape shape;
         shape.SetAsBox(7.0f, 0.2f);
@@ -1133,7 +1303,15 @@ namespace cs296
 
     }
 
-
+    /*!##Tunnel through which ball goes to hit Big balls
+      ###Body* body 
+      which is used to make tunnel through which ball moves after thrown from platform.
+      ###b2EdgeShape shape 
+      Edge shape body which changes as needed to make two circular arcs to make tunnel like shape. Circular Shape is made using parametric equation of circle. First circle is of radius 15 and other of 20. Both with center (5,-62).
+      
+      
+      This object is used to direct ball towards big balls so that it can hit them and move them forward towards motor.
+    */
     //tunnel through which ball goes to hit big balls + big balls + motor to hit balls
     {
       float x0 = 5.0f, y0 = -62.0, r= 15,init=-0.40;
@@ -1171,7 +1349,19 @@ namespace cs296
         x=tempx;
         y=tempy;
       }
-
+      /*!##Big Balls
+        ###b2Body* sbody 
+        Body to represent 5 big balls on the horizontal platform which upon hitting motor goes towards fructum.
+        ###b2CircleShape circle 
+        circle shape object with radius 2 to represent Big balls.
+        ###b2FixtureDef ballfd 
+        ball's fixture definition with density 2.0 and friction and restitution 0.0.
+        ###b2BodyDef ballbd 
+        body Definitionwhich sets position at different positions to make 5 different balls.
+      
+      
+          This object is used to make balls which acts as weight for fructum which hits boat to and moves boat.
+    */
       {
         b2Body* sbody;
         b2CircleShape circle;
@@ -1190,7 +1380,26 @@ namespace cs296
         }
       }
       
-
+      /*!##Motor
+        ###b2PolygonShape 
+        shape A box shape to make the bar which represents roatating motor, this is of lenth 20 and width 0.4.
+        ###b2BodyDef bd 
+        Body definition which sets position at 56,-74 and to make it a dynamic body.
+        ###b2Body* body 
+        This is body representing motor in the system to place it in world.
+        ###b2FixtureDef *fd  
+        fixture definition with density 1.0 and shape as the rectangular bar defined above.
+        ###b2PolygonShape shape2 
+        This is the rectangular shaped object of width 12.0 and length 0.4.
+        ###b2BodyDef bd2 
+        Body definition of object whch sets postion at 56,-74 and make it static body.
+        ###b2Body* body2 
+        This defines the body representing hidden box which acts as hinge for the rotating motor.
+        ###b2RevoluteJointDef 
+        jointDef Joint Definition which joins body and body2 which rotates with Speed 15 and Torque 1000000.0.
+        
+          This object is used to throw Big balls towards right end of simulation to act as weight for fructum.
+    */
       {
 				b2PolygonShape shape;
         shape.SetAsBox(10.0f, 0.2f);
@@ -1226,7 +1435,28 @@ namespace cs296
         m_world->CreateJoint(&jointDef);    
        }
 
-       //system to replace piston a Z
+       /*!## Fructum Object
+        ###b2PolygonShape shape 
+        This defines shape of object which consist of three parts two horizontal platforms and one vertical platform.
+        ###b2BodyDef bd 
+        Body definition of object fructum at postion (93.8,-70) and body type dynamic.
+        ###b2Body* body 
+        body defines body which keep changing shape to make a Z shaped object to replace piston shape to a mechanical object. This acts as hitting bat for bot.
+        ###b2FixtureDef *fd 
+        This is fixture definition of fructum with density 1 and shape mentioned above.
+        ###b2PolygonShape shape2 
+        This is the rectangular shaped object of width 12.0 and length 0.4.
+        ###b2BodyDef bd2 
+        Body definition of object whch sets postion at 56,-74 and make it static body.
+        ###b2Body* body2 
+        This defines the body representing hidden box which acts as hinge for the fructum.
+        ###b2RevoluteJointDef 
+        jointDef Joint Definition which joins body and body2 to make a rotatable fructum to hit boat.
+
+          This is the object made to replace piston mehanism as a mechanical object to hit the boat. This activates when big balls fall on one of its horizontal platfotm.
+       */
+      //system to replace piston a Z
+
        {
 				b2PolygonShape shape;
         shape.SetAsBox(6.0f, 0.2f);
@@ -1273,7 +1503,20 @@ namespace cs296
         // shape.Set(b2Vec2(88.0,-69), b2Vec2(88.0, -60));
         // b1->CreateFixture(&shape, 0.0f);
       }
+      /*!##Boat
+      ###b2PolygonShape shape;
+        "shape" is a polygon shape object which is a custom shape object representing Boat which moves when hit from behind. 
+        It is made by joining points (-5,1), (2,-2.5), (5,1) and (-2,-2.5) relative to the center placed at (80.0,-90.0) 
+      ###b2BodyDef bd;
+        bd is body definition and its position is set to (80,90) .
+      ###b2FixtureDef fd;
+        fd is body fixture definition and its density and friction are set to 0.1 and 0.0 respectively.  
+      ###b2Body* body;
+        body is a pointer to rigid body object which is the boat object drawn on world.
       
+
+      This object is the boat object which is the final aim of simulation which is moved after a hit from behind by the fulcrum horizontal bar.
+    */
       //boat
       {
         b2PolygonShape shape;
