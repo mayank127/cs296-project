@@ -1,0 +1,24 @@
+\begin{thebibliography}{1}
+
+\bibitem{GNU}
+GNU Documentation.
+\newblock Optimizations.
+\newblock \url{http://gcc.gnu.org/onlinedocs/gcc/Optimize-Options.html}.
+
+\bibitem{profiling}
+Pixelbeat.
+\newblock Profiling.
+\newblock \url{http://www.pixelbeat.org/programming/profiling/}.
+
+\bibitem{Time}
+StackOverflow.
+\newblock time-vs-gettimeofday.
+\newblock
+  \url{http://stackoverflow.com/questions/15158863/time-vs-gettimeofday-c}.
+
+\bibitem{Perf}
+Wikipedia.
+\newblock Perf.
+\newblock \url{https://perf.wiki.kernel.org/index.php/Main_Page}.
+
+\end{thebibliography}

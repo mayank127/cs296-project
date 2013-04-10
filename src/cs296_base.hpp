@@ -180,6 +180,9 @@ namespace cs296
     it is used here so that when we have pointer of base class that is b2ContactListener we can delete instance of derived
     class base_sim_t.
     */
+    
+    inline b2World* get_world(void) {return m_world;}
+    
     virtual ~base_sim_t();
     
 

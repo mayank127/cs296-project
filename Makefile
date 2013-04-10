@@ -21,6 +21,7 @@ SRCDIR = $(PROJECT_ROOT)/src
 OBJDIR = $(PROJECT_ROOT)/obj
 BINDIR = $(PROJECT_ROOT)/bin
 DOCDIR = $(PROJECT_ROOT)/doc
+SCRIPTDIR = $(PROJECT_ROOT)/scripts
 
 # Library Paths
 BOX2D_ROOT=$(EXTERNAL_ROOT)
@@ -57,16 +58,20 @@ INCS := $(wildcard $(SRCDIR)/*.hpp)
 OBJS := $(SRCS:$(SRCDIR)/%.cpp=$(OBJDIR)/%.o)
 
 
-.PHONY: all setup doc clean distclean
 
-all: setup $(BINDIR)/$(TARGET)
+.PHONY: all setup doc clean Box2D report exe dist install
+
+all:exe
 
 setup:
 	@$(ECHO) "Setting up compilation..."
 	@mkdir -p obj
 	@mkdir -p bin
+	@mkdir -p plot_gen
 
-$(BINDIR)/$(TARGET): $(OBJS)
+-include $(OBJS:.o=.d)
+
+$(BINDIR)/$(TARGET): box2D $(OBJS) 
 	@$(PRINTF) "$(MESG_COLOR)Building executable:$(NO_COLOR) $(FILE_COLOR) %16s$(NO_COLOR)" "$(notdir $@)"
 	@$(CC) -o $@ $(LDFLAGS) $(OBJS) $(LIBS) 2> temp.log || touch temp.err
 	@if test -e temp.err; \
@@ -77,7 +82,7 @@ $(BINDIR)/$(TARGET): $(OBJS)
 	fi;
 	@$(RM) -f temp.log temp.err
 
--include $(OBJS:.o=.d)
+
 
 $(OBJS): $(OBJDIR)/%.o : $(SRCDIR)/%.cpp
 	@$(PRINTF) "$(MESG_COLOR)Compiling: $(NO_COLOR) $(FILE_COLOR) %25s$(NO_COLOR)" "$(notdir $<)"
@@ -90,16 +95,55 @@ $(OBJS): $(OBJDIR)/%.o : $(SRCDIR)/%.cpp
 	fi;
 	@$(RM) -f temp.log temp.err
 
+box2D: 
+	@$(PRINTF) "$Compiling Box2D"
+	@$ cd $(EXTERNAL_ROOT)/src/ ; tar -zxvf Box2D.tgz ; cd Box2D ; mkdir build296 ; cd build296 ; cmake ../ ; make ; make install ; cd ../../../../
+
+
+exe: clean setup $(BINDIR)/$(TARGET)
+	@$(PRINTF) "Executable Made in bin folder"
+
+install: exe report
+	@$ rm -rf ../install
+	@$ mkdir ../install
+	@$ mkdir ../install/doc
+	@$ cp -r bin/ plots/ ../install/
+	@$ cp ./doc/profiling_report.html ./doc/g11_prof_report.pdf ../install/doc/
+
+dist: clean
+	@$ rm ../cs296_project_code/ -rf
+	@$ mkdir ../cs296_project_code
+	@$ cp -r * ../cs296_project_code/
+	@$ tar -zcvf ../cs296_g11_project.tar.gz ../cs296_project_code
+	@$ rm ../cs296_project_code/ -rf
+	
+change:
+	@$ cd $(SRCDIR)/main1 ; cp main_sim.cpp ../main.cpp ;
+
+	
+change1:
+	@$ cd $(SRCDIR)/main1 ; cp main.cpp ../main.cpp
+
+plots: change exe change1
+	@$(ECHO) -n "Generating csv file ...  "
+	python3 $(SCRIPTDIR)/g11_gen_csv.py 
+	@$(ECHO) -n "Generating plots ...  "
+	python3 $(SCRIPTDIR)/g11_gen_plots.py 
+
 doc:
 	@$(ECHO) -n "Generating Doxygen Documentation ...  "
 	@$(RM) -rf doc/html
 	@$(DOXYGEN) $(DOCDIR)/Doxyfile 2 > /dev/null
 	@$(ECHO) "Done"
 
+report: 
+	@$(ECHO) -n "Generating Latex Documentation ...  "
+	@$(RM) -rf $(DOCDIR)/*.aux $(DOCDIR)/*.bbl $(DOCDIR)/*.blg $(DOCDIR)/*.log $(DOCDIR)/*.pdf
+	@$ cd $(DOCDIR); latex g11_prof_report; bibtex g11_prof_report; latex g11_prof_report; latex g11_prof_report; dvips g11_prof_report.dvi; ps2pdf g11_prof_report.ps
+
 clean:
 	@$(ECHO) -n "Cleaning up..."
-	@$(RM) -rf $(OBJDIR) *~ $(DEPS) $(SRCDIR)/*~
+	@$ rm -rf plot_gen
+	@$ rm -rf data/*.csv
+	@$(RM) -rf $(OBJDIR) *~ $(DEPS) $(SRCDIR)/*~ $(DOCDIR)/*.aux $(DOCDIR)/*.log $(DOCDIR)/*.dvi $(DOCDIR)/*.pdf $(DOCDIR)/html $(DOCDIR)/*.ps $(DOCDIR)/*.bbl $(DOCDIR)/*.blg $(BINDIR) $(EXTERNAL_ROOT)/include $(EXTERNAL_ROOT)/lib $(EXTERNAL_ROOT)/src/Box2D
 	@$(ECHO) "Done"
-
-distclean: clean
-	@$(RM) -rf $(BINDIR) $(DOCDIR)/html
