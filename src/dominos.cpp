@@ -310,8 +310,33 @@ namespace cs296
     //! Rotating platform with a ball kept on it
     /*!###b2PolygonShape shape
      * It is a polygon shape object whose dimensions are set as 2.2,0.2
-     * ###b2BodyDef bd 
+     *  ###b2BodyDef bd;
+     * bd is body definition and its type is set as dyamic bodywith position as -17,12
+     * ###b2FixtureDef *fd 
+     * it contains the properties for body , like density = 1 and its shape is set as defined by variable shape.
+     * ###b2Body* body
+     * body refers to the horizontal bar.
+     * b2PolygonShape shape2
+     * It is a polygon shape object whose dimensions are set as 0.2,0.2
+     *  ###b2BodyDef bd2;
+     * bd2 is body definition with position as -17,12
+     * ###b2Body* body2
+     * body2 refers to the body for hinging.
+     * ###b2RevoluteJointDef jointDef
+     * revolute joint used for defining the hinge for the rotating bar.
      * 
+     * 
+     *  ###b2CircleShape circle;
+          "circle" is a circular object of radius 1m. This is the size of a sphere present on the platform.
+        ###b2FixtureDef ballfd;
+          "ballfd" is a fixture definition whose shape is set by the above defined variable "circle" i.e of a circle, 
+          density is set as 5 Kg/m^2, friction and restitution coefficient are set as 0.0. 
+        ###b2BodyDef ballbd;
+          "ballbd" is body definition -17,12.5, 
+          where "i" varies from 0 to 4. In each iteration a new circular object (sphere) is made. "ballbd" is a dynamic type object.  
+        ###b2Body* sbody;
+          "sbody" is a pointer to rigid body object which is a sphere.
+        
      * */
     {
       b2PolygonShape shape;
@@ -465,15 +490,39 @@ namespace cs296
     }
 
 
-    //!hammer, platform , tilted platform, curved tunnel
+    //hammer, platform , tilted platform, curved tunnel
+    //!horizontal platform under hammer
 /*!
 ###b2PolygonShape shape
 This is a shape variable whose size is set as 8x2.
 ###b2BodyDef bd
 This body definition is for the horizontal bar placed under the hammer. its position is set as 0,8.
 ###b2Body* body
-This variable refers to the above mentioned horizontal bar
-
+This variable refers to the above mentioned horizontal bar.
+* ###b2FixtureDef *fd 
+* fd is the fixture definition variable which contains the detail about the properties of the horizontal platform. Here density is set as 1 and 
+* shape is set as defined by shape variable.
+* */
+//!hammer
+/*!
+###b2PolygonShape shape1;
+* shape1 is the polygon shape object which is a rectangle of size 0.2x4. This is the handle of hammer
+* ###b2BodyDef bd1;
+* bd1 is the body definition for the handle of hammer, which is of type dynamic and whose position is set as 0,13.
+* ###b2Body* body1
+* body1 is the b2Body variable which refers to the handle of the hammer
+* ###b2FixtureDef *fd1
+* fd1 is the fixture definition which contains the properties of the handle of the hammer, like density=1 and shape is set as defined by shape1 variable.
+* ###b2PolygonShape shape2;
+* shape2 is the polygon shape object which is a rectangle of size 2x1. This is the top of hammer
+* ###b2FixtureDef *fd2
+* fd2 is the fixture definition which contains the properties of the top of the hammer, like density=1000 and shape is set as defined by shape2 variable.
+* 
+* Here density is kept very hign so that upper part of hammer causes the hammer to rotate very fast and give a good momentum to the ball.
+* ###b2PolygonShape shape3;
+* shape3 is the polygon shape object which is a rectangle of size 2x0.2. This will be used for the purpose of hinging.
+* ###b2RevoluteJointDef jointDef;
+* This variable is the joint definition for the hinges of the rotating platform. Local anchors are located at the centre of each object. 
 
 */
 
@@ -530,7 +579,16 @@ This variable refers to the above mentioned horizontal bar
       jointDef.localAnchorB.Set(0,0);
       jointDef.collideConnected = false;
       m_world->CreateJoint(&jointDef);
-
+//! tilted platorm
+/*!
+ * ###b2PolygonShape shape5;
+* shape5 is the polygon shape object which is a rectangle of size 4x0.25. This is the tilted platform, so that when ball comes rolling on it then it rises and enters in tunnel.
+* ### b2BodyDef bd5;
+* bd5 is the body definition for the above mentioned bar. Its position is set as 7,10 and angle is set by 0.5
+* ###b2Body* body5
+ * body5 is the b2Body variable which refers to this tilted platform.
+ * Then fixtures are set for this body5 with density being 0 and shape being defined by shape5 variable.
+ * */
       b2PolygonShape shape5;
       shape5.SetAsBox(4.0f, 0.25f, b2Vec2(0.f,0.f), 0.5f);
   
@@ -540,7 +598,19 @@ This variable refers to the above mentioned horizontal bar
       b2Body* body5 = m_world->CreateBody(&bd5);
       body5->CreateFixture(&shape5, 0.0f);
 
-
+//!Curved tunnel
+/*!
+ * Tunnel is made using the parametric equation of the curve where centre is set as 13,8 and radius bein 8. init=-0.4, is the initial value of the cos0 where theta is the parameter of equation
+ * ###b2Body* b1; 
+ * bd1 is the b2Body variable which refers to a edge using which a circle will be made.
+ * ###b2EdgeShape shape
+ * This is the edge shape object.
+ * ###float x, y
+ * These variables are the x and y coordinates from where the lines will be drawn. These are calculate using the parametric equatoin of circle.
+ * ###float tempx,tempy
+ * These variables denotes the next position of the parametric x and y. and an edge is drawn b/w x,y and tempx , tempy.
+ * This is carried out in loop thus generating many edges to make it look like a circle.
+ * */
       {
         float x0 = 13.0f, y0 = 8.0, r= 8,init=-0.40;
 
@@ -558,7 +628,10 @@ This variable refers to the above mentioned horizontal bar
           x=tempx;
           y=tempy;
         }
-
+/*! The above mentioned same procedure repeats again, but now with radius equal to 3 so that a inner circle is drawn
+ * Then init is modified and again circles are drawn both inner and outer.
+ * 
+ * */
         r = 3.0;
 
         x=x0 + r*init;
@@ -638,10 +711,35 @@ This variable refers to the above mentioned horizontal bar
       }
 
     }
-
+//!L-shaped bucket hanging at the left end of the simulation.
     //bucket pendulum which contains ball 
     {
-
+/*!
+ *  ###b2BodyDef *bd;
+     * bd is body definition and its type is set as dyamic bodywith position as -43.5,8. This refers to the vertical bar present in that L.
+     * ###b2PolygonShape bs1;
+     * bs1 is a polygon defined here whose size is 2x0.2
+     * ###b2FixtureDef *fd1 
+     * it contains the properties for body bs1, like density = 0, friction = 0.5, restitution =0.Its shape is also set as defined by variable bs1.
+     * 
+ *   * ###b2PolygonShape bs2;
+     * bs1 is a polygon defined here whose size is 0.2x2.
+     * ###b2FixtureDef *fd2
+     * it contains the properties for body bs2, like density = 0, friction = 0.5, restitution =0.Its shape is also set as defined by variable bs2.
+     * And this body refers to the horizontal bar of that L
+     * ### b2Body* box1
+     * Box1 is b2body type variable which refers to the L shaped object.fd1 and fd2 are attached to this bar.
+ * 
+ * ### b2Body* b2;
+ * ###b2PolygonShape bs1;
+     * bs1 is a polygon defined here whose size is 0.25x0.25.This body refers to another body which is required to hinge this
+     * ###BodyDef *bd;
+     * bd is body definition and its position as -43.5,36. 
+     * ###b2RevoluteJointDef jd
+     * jd is the revolute joint to create hinge between the L and the vertically hanging rope.
+ * 
+ * 
+ * */
       b2BodyDef *bd = new b2BodyDef;
       bd->type = b2_dynamicBody;
       bd->position.Set(-43.5,8);
@@ -688,7 +786,19 @@ This variable refers to the above mentioned horizontal bar
       m_world->CreateJoint(&jd);
     }
     
-    //curves at the middle of the design with a hole using parametric equation
+    //!curves at the middle of the design with a hole using parametric equation
+    /*!
+     *  Curve is made using the parametric equation of the curve where centre is set as -30,15 and radius being 20. init=-0.4, is the initial value of the cos0 where theta is the parameter of equation
+ * ###b2Body* b1; 
+ * bd1 is the b2Body variable which refers to a edge using which a circle will be made.
+ * ###b2EdgeShape shape
+ * This is the edge shape object.
+ * ###float x, y
+ * These variables are the x and y coordinates from where the lines will be drawn. These are calculate using the parametric equatoin of circle.
+ * ###float tempx,tempy
+ * These variables denotes the next position of the parametric x and y. and an edge is drawn b/w x,y and tempx , tempy.
+ 
+     * */
     {
       float x0 = -30.0f, y0 = 15.0, r= 20,init=-0.40;
 
@@ -708,7 +818,7 @@ This variable refers to the above mentioned horizontal bar
       }
       shape.Set(b2Vec2(-50.0,50), b2Vec2(x, y));
       b1->CreateFixture(&shape, 0.0f);
-
+/*! Then again two more curves are made using the same logic as above*/
       x0 = -5.0;
       y0 = 20.0;
       r = 30.0;
@@ -741,7 +851,12 @@ This variable refers to the above mentioned horizontal bar
 
     }
 
-    //rotating platform with shelves for balls which then hits dominos
+    //!rotating platform with shelves for balls which then hits dominos
+    /*!
+     * In this three platforms are made, and a series of dominos is kept on each one of them. Adjacent to each platform a rotating bar with a 
+     * ball on it is kept. when ball hits the bar, these balls hit the dominos and results in their falling.
+     * */
+    
     {
       b2PolygonShape shape;
       shape.SetAsBox(8.0f, 0.2f);
