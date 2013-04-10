@@ -10,3 +10,5 @@ test
 *.log
 *.dvi
 *.ps
+*.bbl
+*.blg
